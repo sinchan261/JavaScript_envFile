@@ -8,6 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+
 @Slf4j
 @RestController
 @RequestMapping("/Producer_js_file")
@@ -15,7 +17,7 @@ public class RequestController {
     @Autowired
     EngineServices engineServices;
     @GetMapping("/get")
-    public JavaScriptJson getData(@RequestBody RequestDto requestDto, HttpServletResponse httpServletResponse){
+    public JavaScriptJson getData(@RequestBody RequestDto requestDto, HttpServletResponse httpServletResponse) throws IOException {
 
         httpServletResponse.setContentType("application/json");
         log.info("Hello data is reached{}",requestDto.getConfigur());

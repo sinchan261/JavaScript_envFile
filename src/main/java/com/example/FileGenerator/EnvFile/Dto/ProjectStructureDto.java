@@ -17,4 +17,6 @@ public class ProjectStructureDto {
     private boolean env;
     private boolean gitignore;
     private boolean readme;
+    private boolean includeTests;
+    private boolean includeDocker;
 }

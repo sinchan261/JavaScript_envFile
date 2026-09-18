@@ -19,7 +19,5 @@ public class JsJsonTypeDto {
     private List<String> devDependencies;
     private String database;
     private String authentication;
-    private String includeTests;
-    private String includeDocker;
     private  ProjectStructureDto include;
 }
