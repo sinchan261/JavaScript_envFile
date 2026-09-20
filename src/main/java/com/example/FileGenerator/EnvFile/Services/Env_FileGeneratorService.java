@@ -13,7 +13,7 @@ public class Env_FileGeneratorService {
     public String getContentEnv(){
         int portNumber = ThreadLocalRandom.current().nextInt(1000,9999);
         String text = """
-           PORT = '%d'
+           PORT = %d
            """.formatted(portNumber);
         return text;
     }
