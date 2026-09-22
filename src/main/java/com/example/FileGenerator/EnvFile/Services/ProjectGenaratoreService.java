@@ -25,6 +25,10 @@ public class ProjectGenaratoreService {
     GitignoreGeneratorService gitignoreGeneratorService;
     @Autowired
     JsonGenerator jsonGenerator;
+    @Autowired
+    Docker_jsGeneratorService dockerJsGeneratorService;
+    @Autowired
+    GenerateZipFolder generateZipFolder;
     public Path generateProject(JsJsonTypeDto jsJsonTypeDto, String moduleSystem1) throws IOException{
         Path parentDirectory = Path.of(
                 "C:\\Users\\DELL\\OneDrive\\Documents\\Maven\\EnvFile\\src\\main\\java\\com\\example\\FileGenerator\\EnvFile\\Example"
@@ -32,40 +36,87 @@ public class ProjectGenaratoreService {
 
         Path projectDirectory = Files.createTempDirectory(
                 parentDirectory,
-                "Exam" + jsJsonTypeDto.getProjectName()
+                  jsJsonTypeDto.getProjectName()
         );
         log.info("Generator file path is {}",projectDirectory);
         //call for building the project structure
-        createDirectories(projectDirectory,jsJsonTypeDto,moduleSystem1);
-        return projectDirectory;
+       Path pathDirectory = createDirectories(projectDirectory,jsJsonTypeDto,moduleSystem1);
+        Path ZipDirectory =generateZipFolder.getZipFile(pathDirectory);
+        return ZipDirectory;
 
     }
 
-    public void createDirectories(Path projectDirectory,JsJsonTypeDto jsJsonTypeDto,String moduleType) throws IOException {
+    public Path createDirectories(Path projectDirectory,JsJsonTypeDto jsJsonTypeDto,String moduleType) throws IOException {
         if(jsJsonTypeDto.getInclude().isControllers()){
-           Files.createDirectories(projectDirectory.resolve("Controllers/webController.js"));
-
+           Path controllerDirectory =  projectDirectory.resolve("Controllers");
+           Files.createDirectories(controllerDirectory);
+            Path controllerFile =
+                    controllerDirectory.resolve("webController.js");
+            Files.writeString(controllerFile, "// Controller code");
         }
         if(jsJsonTypeDto.getInclude().isServices()){
+            Path Service = projectDirectory.resolve("Service");
 
-            Files.createDirectories(projectDirectory.resolve("Service/webService.js"));
+            Files.createDirectories(Service);
+            Path ServiceJs = Service.resolve("webService.js");
+            Files.writeString(ServiceJs, "// Controller code");
 
         }
         if(jsJsonTypeDto.getInclude().isMiddlewares()){
-            Path middlepath = projectDirectory.resolve("MiddleWare/webMiddleware.js");
-            Files.createDirectories(middlepath);
+            Path middlewareDirectory =
+                    projectDirectory.resolve("middlewares");
+
+            Files.createDirectories(middlewareDirectory);
+
+            Path middlewareFile =
+                    middlewareDirectory.resolve("webMiddleware.js");
+
+            Files.writeString(
+                    middlewareFile,
+                    "// Middleware code"
+            );
         }
         if(jsJsonTypeDto.getInclude().isModels()){
-            Path modelPath = projectDirectory.resolve("Model/webModelPath.js");
-            Files.createDirectories(modelPath);
+            Path modelDirectory =
+                    projectDirectory.resolve("models");
+
+            Files.createDirectories(modelDirectory);
+
+            Path modelFile =
+                    modelDirectory.resolve("webModel.js");
+
+            Files.writeString(
+                    modelFile,
+                    "// Model code"
+            );
         }
         if(jsJsonTypeDto.getInclude().isRoutes()){
-            Path routePath = projectDirectory.resolve("Route/webRouter.js");
-            Files.createDirectories(routePath);
+            Path routeDirectory =
+                    projectDirectory.resolve("routes");
+
+            Files.createDirectories(routeDirectory);
+
+            Path routeFile =
+                    routeDirectory.resolve("webRouter.js");
+
+            Files.writeString(
+                    routeFile,
+                    "// Route code"
+            );
         }
         if(jsJsonTypeDto.getInclude().isConfig()){
-            Path configPath = projectDirectory.resolve("Config/webConfig.js");
-            Files.createDirectories(configPath);
+            Path configDirectory =
+                    projectDirectory.resolve("config");
+
+            Files.createDirectories(configDirectory);
+
+            Path configFile =
+                    configDirectory.resolve("webConfig.js");
+
+            Files.writeString(
+                    configFile,
+                    "// Configuration code"
+            );
         }
 
          // for dotenv file
@@ -88,7 +139,12 @@ public class ProjectGenaratoreService {
             String content = gitignoreGeneratorService.gitIgnore();
             Files.writeString(envFile,content);
         }
+        if(jsJsonTypeDto.getInclude().isIncludeDocker()){
+            Path dockerfile =   projectDirectory.resolve("Dockerfile");
 
+            String content = dockerJsGeneratorService.getJsDockerContent();
+            Files.writeString(dockerfile,content);
+        }
      //generating Server.js file
       String serverText = serverJsGeneratorService.generateServerFile(projectDirectory,moduleType);
         Path serverfile = projectDirectory.resolve("server.js");
@@ -103,6 +159,9 @@ public class ProjectGenaratoreService {
                 .writeValue(serverfile1,
                         Package
                 );
+
+        return projectDirectory;
+
 //        Files.writeString(serverfile1,  Package.);
     }
 

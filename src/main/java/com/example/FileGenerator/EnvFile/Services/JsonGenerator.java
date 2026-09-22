@@ -27,7 +27,7 @@ public class JsonGenerator {
 
         ObjectNode scripts = packageJson.putObject("scripts");
         scripts.put("start","node server.js");
-        if( jsJsonTypeDto.getDevDependencies().contains("nodemon**"))
+        if( jsJsonTypeDto.getDevDependencies().stream().map(e->e.startsWith("nodemon")).findFirst().isPresent())
             scripts.put("dev","nodemon server.js");
 
         Map<String,String> dependencies =
@@ -40,7 +40,7 @@ public class JsonGenerator {
                         .collect(Collectors.toMap(e->e[0],e->e[1]));
 
         ObjectNode dependencies1 = packageJson.putObject("dependencies");
-        dependencies.forEach(dependencies1::put);
+        deveDpendencies.forEach(dependencies1::put);
 
         ObjectNode deveDpendencies1 = packageJson.putObject("devDpendencies");
         dependencies.forEach(deveDpendencies1::put);
