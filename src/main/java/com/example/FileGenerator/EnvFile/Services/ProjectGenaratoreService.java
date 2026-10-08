@@ -1,5 +1,6 @@
 package com.example.FileGenerator.EnvFile.Services;
 
+import com.example.FileGenerator.EnvFile.Configuration.SupabaseConfiguration;
 import com.example.FileGenerator.EnvFile.Dto.JsJsonTypeDto;
 import com.example.FileGenerator.EnvFile.Dto.ReadmeRequestDto;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +16,8 @@ import java.nio.file.Path;
 @Slf4j
 @Service
 public class ProjectGenaratoreService {
+    @Autowired
+    SupabaseService supabaseService;
     @Autowired
     Server_jsGeneratorService serverJsGeneratorService;
     @Autowired
@@ -42,6 +45,10 @@ public class ProjectGenaratoreService {
         //call for building the project structure
        Path pathDirectory = createDirectories(projectDirectory,jsJsonTypeDto,moduleSystem1);
         Path ZipDirectory =generateZipFolder.getZipFile(pathDirectory);
+       String projectId =  supabaseService.uploadZipToSupabase(ZipDirectory);
+       log.info("Project Id is{} ",projectId);
+       Files.deleteIfExists(ZipDirectory);
+//        Files.deleteIfExists(pathDirectory);
         return ZipDirectory;
 
     }

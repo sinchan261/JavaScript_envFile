@@ -1,0 +1,21 @@
+{
+  "name" : "express-api",
+  "version" : "1.0.0",
+  "private" : true,
+  "type" : "module",
+  "scripts" : {
+    "start" : "node server.js",
+    "dev" : "nodemon server.js"
+  },
+  "dependencies" : {
+    "nodemon" : "2.0.1"
+  },
+  "devDpendencies" : {
+    "jsonwebtoken" : "4.0",
+    "dotenv" : "4.0",
+    "cors" : "4.0",
+    "express" : "4.0",
+    "multer" : "4.0",
+    "bcrypt" : "4.0"
+  }
+}
