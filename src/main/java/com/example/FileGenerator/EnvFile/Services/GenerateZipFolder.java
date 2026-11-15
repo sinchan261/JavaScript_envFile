@@ -10,60 +10,52 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-
 @Slf4j
 @Service
 public class GenerateZipFolder {
 
-//    public getZipFolder(){
-//        try{
-//
-//        }catch(IOException exception){
-//
-//        }
-//    }
-
     public Path getZipFile(Path pathDirectory) throws IOException {
-            Path getPath = Path.of("C:\\Users\\DELL\\OneDrive\\Documents\\Maven\\EnvFile\\src\\main\\java\\com\\example\\FileGenerator\\EnvFile\\ZipFile");
 
-            Path zipPath = Files.createTempFile(getPath,"exam" ,".zip");
-     log.info("ZipPath is {}",zipPath);
-            try (ZipOutputStream zipOutputStream =
-                         new ZipOutputStream(
-                                 Files.newOutputStream(zipPath)
-                         )) {
+        // Create ZIP in the OS temporary directory
+        Path zipPath = Files.createTempFile("exam-", ".zip");
 
-                Files.walk(pathDirectory)
-                        .filter(Files::isRegularFile)
-                        .forEach(file -> {
+        log.info("ZIP path is {}", zipPath);
 
-                            try {
+        try (ZipOutputStream zipOutputStream =
+                     new ZipOutputStream(
+                             Files.newOutputStream(zipPath)
+                     )) {
 
-                                String entryName =
-                                        pathDirectory
-                                                .relativize(file)
-                                                .toString()
-                                                .replace("\\", "/");
+            Files.walk(pathDirectory)
+                    .filter(Files::isRegularFile)
+                    .forEach(file -> {
 
-                                ZipEntry zipEntry =
-                                        new ZipEntry(entryName);
+                        try {
+                            String entryName = pathDirectory
+                                    .relativize(file)
+                                    .toString()
+                                    .replace("\\", "/");
 
-                                zipOutputStream.putNextEntry(zipEntry);
+                            ZipEntry zipEntry = new ZipEntry(entryName);
 
-                                Files.copy(
-                                        file,
-                                        zipOutputStream
-                                );
+                            zipOutputStream.putNextEntry(zipEntry);
 
-                                zipOutputStream.closeEntry();
+                            Files.copy(file, zipOutputStream);
 
-                            } catch (IOException e) {
-                                throw new UncheckedIOException(e);
-                            }
-                        });
-            }
+                            zipOutputStream.closeEntry();
+
+                        } catch (IOException e) {
+                            throw new UncheckedIOException(e);
+                        }
+                    });
+        } catch (UncheckedIOException e) {
+            Files.deleteIfExists(zipPath);
+            throw e.getCause();
+        } catch (IOException e) {
+            Files.deleteIfExists(zipPath);
+            throw e;
+        }
 
         return zipPath;
     }
-
 }

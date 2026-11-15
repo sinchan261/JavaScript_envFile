@@ -32,24 +32,29 @@ public class ProjectGenaratoreService {
     Docker_jsGeneratorService dockerJsGeneratorService;
     @Autowired
     GenerateZipFolder generateZipFolder;
-    public Path generateProject(JsJsonTypeDto jsJsonTypeDto, String moduleSystem1) throws IOException{
-        Path parentDirectory = Path.of(
-                "C:\\Users\\DELL\\OneDrive\\Documents\\Maven\\EnvFile\\src\\main\\java\\com\\example\\FileGenerator\\EnvFile\\Example"
+    public String generateProject(JsJsonTypeDto jsJsonTypeDto, String moduleSystem1) throws IOException{
+        Path projectDirectory = Files.createTempDirectory(
+                "generated-" + jsJsonTypeDto.getProjectName() + "-"
         );
 
-        Path projectDirectory = Files.createTempDirectory(
-                parentDirectory,
-                  jsJsonTypeDto.getProjectName()
+
+        log.info("Generator file path is {}", projectDirectory);
+
+        // Generate project structure
+        Path pathDirectory = createDirectories(
+                projectDirectory,
+                jsJsonTypeDto,
+                moduleSystem1
         );
         log.info("Generator file path is {}",projectDirectory);
         //call for building the project structure
-       Path pathDirectory = createDirectories(projectDirectory,jsJsonTypeDto,moduleSystem1);
+
         Path ZipDirectory =generateZipFolder.getZipFile(pathDirectory);
-       String projectId =  supabaseService.uploadZipToSupabase(ZipDirectory);
+       String projectId =  supabaseService.uploadZipToSupabase2(ZipDirectory);
        log.info("Project Id is{} ",projectId);
        Files.deleteIfExists(ZipDirectory);
 //        Files.deleteIfExists(pathDirectory);
-        return ZipDirectory;
+        return projectId;
 
     }
 

@@ -20,22 +20,39 @@ public class SupabaseService {
     SupabaseConfiguration supabaseConfiguration;
 @Autowired
     RestClient restClient;
-@Autowired
-KafkaTemplate<String,String> kafkaTemplate;
-    @Value("${script.commands.topic.name}")
-    private  String ScriptCommandsTopicName;
-public String uploadZipToSupabase( Path Zippath) throws IOException {
-    String projectId = UUID.randomUUID().toString();
+//@Autowired
+//KafkaTemplate<String,String> kafkaTemplate;
+//    @Value("${script.commands.topic.name}")
+//    private  String ScriptCommandsTopicName;
+//public String uploadZipToSupabase( Path Zippath) throws IOException {
+//    String projectId = UUID.randomUUID().toString();
+//
+//    String storagepath = projectId+"/project.zip";
+//    byte[] zipBytes = Files.readAllBytes(Zippath);
+//    restClient.post().uri(supabaseConfiguration.getSupabaseUrl()
+//    +"/storage/v1/object/"
+//                    +supabaseConfiguration.getSupabaseBucket()+"/"+storagepath
+//    ).header("Authorization", "Bearer " + supabaseConfiguration.getSupabaseKey())
+//            .header("apikey", supabaseConfiguration.getSupabaseKey())
+//            .contentType(MediaType.APPLICATION_OCTET_STREAM) .body(zipBytes) .retrieve() .toBodilessEntity();
+//    kafkaTemplate.send(ScriptCommandsTopicName,projectId);
+// return projectId;
+//}
+    public String uploadZipToSupabase2( Path Zippath) throws IOException {
+        String projectId = UUID.randomUUID().toString();
 
-    String storagepath = projectId+"/project.zip";
-    byte[] zipBytes = Files.readAllBytes(Zippath);
-    restClient.post().uri(supabaseConfiguration.getSupabaseUrl()
-    +"/storage/v1/object/"
-                    +supabaseConfiguration.getSupabaseBucket()+"/"+storagepath
-    ).header("Authorization", "Bearer " + supabaseConfiguration.getSupabaseKey())
-            .header("apikey", supabaseConfiguration.getSupabaseKey())
-            .contentType(MediaType.APPLICATION_OCTET_STREAM) .body(zipBytes) .retrieve() .toBodilessEntity();
-    kafkaTemplate.send(ScriptCommandsTopicName,projectId);
- return projectId;
-}
+        String storagepath = projectId+"/project.zip";
+        byte[] zipBytes = Files.readAllBytes(Zippath);
+        restClient.post().uri(supabaseConfiguration.getSupabaseUrl()
+                        +"/storage/v1/object/"
+                        +supabaseConfiguration.getSupabaseBucket()+"/"+storagepath
+                ).header("Authorization", "Bearer " + supabaseConfiguration.getSupabaseKey())
+                .header("apikey", supabaseConfiguration.getSupabaseKey())
+                .contentType(MediaType.APPLICATION_OCTET_STREAM) .body(zipBytes) .retrieve() .toBodilessEntity();
+
+        return projectId;
+    }
+
+
+
 }

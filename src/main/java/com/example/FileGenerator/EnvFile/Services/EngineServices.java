@@ -1,9 +1,6 @@
 package com.example.FileGenerator.EnvFile.Services;
 
-import com.example.FileGenerator.EnvFile.Dto.JavaScriptJson;
-import com.example.FileGenerator.EnvFile.Dto.JsJsonTypeDto;
-import com.example.FileGenerator.EnvFile.Dto.ProjectStructureDto;
-import com.example.FileGenerator.EnvFile.Dto.RequestDto;
+import com.example.FileGenerator.EnvFile.Dto.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,7 +26,7 @@ public class EngineServices {
     ModelMapper modelMapper;
     @Autowired
     ProjectGenaratoreService projectGenaratoreService;
-    public JavaScriptJson generatedJson(RequestDto requestDto) throws IOException {
+    public Message generatedJson(RequestDto requestDto) throws IOException {
         String projectName1 = requestDto.getConfigur().getOrDefault("projectName","FirstProject"+ LocalDateTime.now()).toString();
         String framework1 = requestDto.getConfigur().get("framework").toString();
         String moduleSystem1 = requestDto.getConfigur().get("moduleSystem").toString();
@@ -56,9 +53,11 @@ public class EngineServices {
                 .tag(requestDto.getTag())
                 .configure(jsJsonTypeDto)
                 .build();
-        projectGenaratoreService.generateProject(jsJsonTypeDto,moduleSystem1);
-
-        return javaScriptJson;
+        String id= projectGenaratoreService.generateProject(jsJsonTypeDto,moduleSystem1);
+        Message new_message = new Message();
+        new_message.setId(id);
+        new_message.setMessage("we are processing give some time");
+        return new_message;
     }
 }
 //public class JsJsonTypeDto {
